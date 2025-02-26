@@ -30,12 +30,23 @@ export function getYtDlpStream(url: string): Readable {
   const ytDlpExecutable = existsSync(localPath) ? localPath : binaryName;
   sendLog('debug', `Using yt-dlp executable: ${ytDlpExecutable}`);
 
-  const args = [
+  // Initialize arguments array.
+  const args: string[] = [];
+
+  // Check for a cookies file in the deps folder.
+  const cookieFilePath = path.join(process.cwd(), 'deps', 'cookies.txt');
+  if (existsSync(cookieFilePath)) {
+    sendLog('debug', `Using cookie file: ${cookieFilePath}`);
+    args.push('--cookies', cookieFilePath);
+  }
+
+  // Add the rest of the arguments.
+  args.push(
     '-f', 'bestaudio',  // Use the best available audio format.
     '--no-playlist',    // Only process the single video.
     '-o', '-',          // Output the stream to stdout.
-    url,
-  ];
+    url
+  );
 
   // Spawn the yt-dlp process.
   const ytDlpProcess = spawn(ytDlpExecutable, args, {
