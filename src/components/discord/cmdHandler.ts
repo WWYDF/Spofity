@@ -1,11 +1,13 @@
 // src/discord/slashCommands.ts
 import { Client, Collection, Interaction } from 'discord.js';
 import { pingCommand } from './commands/ping.js';
+import { playCommand } from './commands/play.js';
 
 export const commands = new Collection<string, any>();
 
 // Add your commands to the collection.
 commands.set(pingCommand.data.name, pingCommand);
+commands.set(playCommand.data.name, playCommand);
 
 export function handleInteractions(client: Client) {
   client.on('interactionCreate', async (interaction: Interaction) => {
