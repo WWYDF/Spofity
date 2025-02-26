@@ -1,3 +1,5 @@
 deps/yt-dlp.exe
 /dist
 /node_modules
+/logs
+config.json

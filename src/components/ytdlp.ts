@@ -2,6 +2,7 @@
 import { spawn } from 'child_process';
 import { Readable } from 'stream';
 import path from 'path';
+import sendLog from './system/logger.js';
 
 /**
  * getYtDlpStream
@@ -37,11 +38,11 @@ export function getYtDlpStream(url: string): Readable {
 
   // Log any errors that come from yt-dlp's stderr.
   ytDlpProcess.stderr.on('data', (data) => {
-    console.error(`yt-dlp error: ${data.toString()}`);
+    sendLog('debug', `yt-dlp error: ${data.toString()}`);
   });
 
   ytDlpProcess.on('error', (error) => {
-    console.error(`yt-dlp process error: ${error}`);
+    sendLog('debug', `yt-dlp process error: ${error}`);
   });
 
   return ytDlpProcess.stdout;
