@@ -9,6 +9,8 @@ const configPath = path.join(process.cwd(), 'config.json');
 const defaultConfig = {
     debug: false,
     bot_token: "",
+    bot_clientId: "",
+    guild_id: "",
     default_volume: 50,
     text_prefix: "",
 };

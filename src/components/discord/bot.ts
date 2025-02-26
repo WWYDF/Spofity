@@ -4,6 +4,7 @@ import { joinVoiceChannel, createAudioPlayer, createAudioResource, AudioPlayerSt
 import { getYtDlpStream } from '../ytdlp.js';
 import { config } from '../system/config.js';
 import sendLog from '../system/logger.js';
+import { handleInteractions } from './cmdHandler.js';
 
 export async function startBot() {
   const TOKEN = config.bot_token;
@@ -21,6 +22,8 @@ export async function startBot() {
   client.once('ready', () => {
     sendLog('success', `Logged in as ${client.user?.tag}!`);
   });
+
+  handleInteractions(client);
 
   client.on('messageCreate', async (message: Message) => {
     // Ignore bot messages and messages that don't start with the prefix.

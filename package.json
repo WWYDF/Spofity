@@ -23,7 +23,8 @@
     "build": "tsc",
     "watch:build": "tsc --watch",
     "start:dev": "concurrently -k \"yarn:watch:build\" \"wait-on dist/main.js && nodemon\"",
-    "start": "node dist/main.js"
+    "start": "node dist/main.js",
+    "register": "tsc && node dist/register.js"
   },
   "include": [
     "src"
