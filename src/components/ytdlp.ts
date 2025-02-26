@@ -2,27 +2,33 @@
 import { spawn } from 'child_process';
 import { Readable } from 'stream';
 import path from 'path';
+import { existsSync } from 'fs';
 import sendLog from './system/logger.js';
 
 /**
  * getYtDlpStream
  * -----------------
- * Spawns the yt-dlp process from the project's `deps` folder to extract an audio stream.
+ * Spawns the yt-dlp process either from the project's `deps` folder (if available)
+ * or from the system PATH if not found in deps.
  *
- * Ensure that:
- * - On Windows, the executable is at `root/deps/yt-dlp.exe`
- * - On Linux/macOS, the executable is at `root/deps/yt-dlp` and has execute permissions.
+ * On Windows, if available, it uses `deps/yt-dlp.exe`.
+ * On Linux/macOS, if available, it uses `deps/yt-dlp` (make sure it has execute permissions).
+ *
+ * If the executable is not found in the deps folder, it falls back to the one in PATH.
  *
  * @param url - The YouTube video URL to stream.
  * @returns A readable stream containing the audio data.
  */
 export function getYtDlpStream(url: string): Readable {
-  // Determine executable name based on platform.
+  // Determine the executable name based on platform.
   const binaryName = process.platform === 'win32' ? 'yt-dlp.exe' : 'yt-dlp';
 
-  // Build the path relative to the project root.
-  // __dirname is 'root/src', so we go one directory up to 'root' then into 'deps'.
-  const ytDlpPath = path.join(process.cwd(), 'deps', binaryName);
+  // Build the local path to the executable in the project's deps folder.
+  const localPath = path.join(process.cwd(), 'deps', binaryName);
+
+  // If the local executable exists, use it; otherwise, fall back to the one in the system PATH.
+  const ytDlpExecutable = existsSync(localPath) ? localPath : binaryName;
+  sendLog('debug', `Using yt-dlp executable: ${ytDlpExecutable}`);
 
   const args = [
     '-f', 'bestaudio',  // Use the best available audio format.
@@ -32,7 +38,7 @@ export function getYtDlpStream(url: string): Readable {
   ];
 
   // Spawn the yt-dlp process.
-  const ytDlpProcess = spawn(ytDlpPath, args, {
+  const ytDlpProcess = spawn(ytDlpExecutable, args, {
     stdio: ['ignore', 'pipe', 'pipe'] // Ignore stdin, capture stdout and stderr.
   });
 
