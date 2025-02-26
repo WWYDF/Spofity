@@ -1,0 +1,31 @@
+{
+  "name": "music-bot",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "repository": "https://git.devante.net/devin/music-bot",
+  "author": "WWYDF <89052946+WWYDF@users.noreply.github.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@discordjs/voice": "^0.18.0",
+    "concurrently": "^9.1.2",
+    "discord.js": "^14.18.0",
+    "nodemon": "^3.1.9",
+    "ytdl-core": "^4.11.5"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.5",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.3"
+  },
+  "scripts": {
+    "build": "tsc",
+    "watch:build": "tsc --watch",
+    "start:dev": "concurrently -k \"yarn:watch:build\" \"wait-on dist/index.js && nodemon\"",
+    "start": "node dist/index.js",
+    "generate": "tsc && node dist/generate.js"
+  },
+  "include": [
+    "src"
+  ]
+}
